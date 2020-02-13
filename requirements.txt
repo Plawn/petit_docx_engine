@@ -1,4 +1,5 @@
 minio
 flask
 docxtpl
+docx
 gevent
