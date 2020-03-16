@@ -10,6 +10,10 @@ minio_client: minio.Minio = None
 db: Dict[str, Template] = {}
 template_folder = 'templates'
 
+if not os.path.exists(template_folder):
+    os.mkdir(template_folder)
+
+
 app = Flask(__name__)
 
 
