@@ -61,10 +61,10 @@ def publipost():
     body = request.get_json()
     try:
 
-        data = body['data']
-        name = body['template_name']
-        output_bucket = body['output_bucket']
-        output_name = body['output_name']
+        data: str = body['data']
+        name: str = body['template_name']
+        output_bucket: str = body['output_bucket']
+        output_name: str = body['output_name']
 
         output = db[name].render(data)
 
@@ -73,4 +73,4 @@ def publipost():
         return jsonify({'error': False})
     except Exception as e:
         traceback.print_exc()
-        return jsonify({'error': True})
+        return jsonify({'error': True}), 500
