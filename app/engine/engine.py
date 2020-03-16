@@ -12,7 +12,7 @@ class docxTemplate(_docxTemplate):
     """Proxying the real class in order to be able to copy.copy the template docx file
     """
 
-    def __init__(self, filename: str = '', document=None):
+    def __init__(self, filename: str = '', document:docx.Document=None):
         self.crc_to_new_media = {}
         self.crc_to_new_embedded = {}
         self.pic_to_replace = {}
@@ -23,8 +23,8 @@ class docxTemplate(_docxTemplate):
 
 class Template:
     def __init__(self, filename: str):
-        self.doc = None
-        self.fields = set()
+        self.doc:docxTemplate = None
+        self.fields: Set[str] = set()
         self.init(filename)
         self.temp_dir = 'temp'
 
@@ -36,7 +36,7 @@ class Template:
         self.__load_fields()
 
     def __load_fields(self):
-        self.fields: Set[str] = list(utils.xml_cleaner(set(re.findall(
+        self.fields = list(utils.xml_cleaner(set(re.findall(
             r"\{{(.*?)\}}", self.doc.get_xml(), re.MULTILINE))))
 
     def __apply_template(self, data: Dict[str, str]) -> docxTemplate:
@@ -52,7 +52,7 @@ class Template:
         renderer.render(data)
         return doc
 
-    def render(self, data: Dict[str, str]) -> str:
+    def render(self, data: Dict[str, object]) -> str:
         save_path = os.path.join(self.temp_dir, str(uuid.uuid4()))
         doc = self.__apply_template(data)
         doc.save(save_path)

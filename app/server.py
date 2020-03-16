@@ -4,10 +4,15 @@ import minio
 from .engine import Template
 from typing import List, Dict
 import os
+import logging
 
 minio_client: minio.Minio = None
 db: Dict[str, Template] = {}
 template_folder = 'templates'
+
+if not os.path.exists(template_folder):
+    os.mkdir(template_folder)
+
 
 app = Flask(__name__)
 
@@ -45,6 +50,7 @@ def load_template():
             db[filename] = Template(name)
             success.append(item)
         except:
+            logging.error(traceback.format_exc())
             traceback.print_exc()
             failed.append(item)
     return jsonify({'success': success, 'failed': failed})
@@ -58,19 +64,28 @@ def get_placeholders():
 
 @app.route('/publipost', methods=['POST'])
 def publipost():
-    body = request.get_json()
+    body:Dict[str, object] = request.get_json()
     try:
 
-        data = body['data']
-        name = body['template_name']
-        output_bucket = body['output_bucket']
-        output_name = body['output_name']
-
+        data: str = body['data']
+        name: str = body['template_name']
+        output_bucket: str = body['output_bucket']
+        output_name: str = body['output_name']
+        # don't actually know if will get used
+        options = body.get('options', [])
+        push_result = body.get('push_result', True)
         output = db[name].render(data)
 
-        minio_client.fput_object(output_bucket, output_name, output)
-
-        return jsonify({'error': False})
+        if push_result :
+            minio_client.fput_object(output_bucket, output_name, output)
+            return jsonify({'error': False})
+        else:
+            # not used for now
+            # should push the file back
+            return jsonify({'result':'OK'})
     except Exception as e:
         traceback.print_exc()
-        return jsonify({'error': True})
+        return jsonify({'error': True}), 500
+
+    finally:
+        os.remove(output)
