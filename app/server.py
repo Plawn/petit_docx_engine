@@ -64,19 +64,25 @@ def get_placeholders():
 
 @app.route('/publipost', methods=['POST'])
 def publipost():
-    body = request.get_json()
+    body:Dict[str, object] = request.get_json()
     try:
 
         data: str = body['data']
         name: str = body['template_name']
         output_bucket: str = body['output_bucket']
         output_name: str = body['output_name']
-
+        # don't actually know if will get used
+        options = body.get('options', [])
+        push_result = body.get('push_result', True)
         output = db[name].render(data)
 
-        minio_client.fput_object(output_bucket, output_name, output)
-
-        return jsonify({'error': False})
+        if push_result :
+            minio_client.fput_object(output_bucket, output_name, output)
+            return jsonify({'error': False})
+        else:
+            # not used for now
+            # should push the file back
+            return jsonify({'result':'OK'})
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': True}), 500
