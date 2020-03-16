@@ -8,6 +8,8 @@ RUN pip3 install -r requirements.txt
 
 COPY . /api
 
+RUN mkdir templates
+
 EXPOSE 5000
 
 ENTRYPOINT ["python3.7", "start.py", "5000"]

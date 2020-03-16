@@ -4,6 +4,7 @@ import minio
 from .engine import Template
 from typing import List, Dict
 import os
+import logging
 
 minio_client: minio.Minio = None
 db: Dict[str, Template] = {}
@@ -45,6 +46,7 @@ def load_template():
             db[filename] = Template(name)
             success.append(item)
         except:
+            logging.error(traceback.format_exc())
             traceback.print_exc()
             failed.append(item)
     return jsonify({'success': success, 'failed': failed})
