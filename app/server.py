@@ -1,6 +1,7 @@
+import traceback
 from flask import Flask, request, jsonify
 import minio
-from engine import Template
+from .engine import Template
 from typing import List, Dict
 import os
 
@@ -44,7 +45,6 @@ def load_template():
             db[filename] = Template(name)
             success.append(item)
         except:
-            import traceback
             traceback.print_exc()
             failed.append(item)
     return jsonify({'success': success, 'failed': failed})
@@ -72,6 +72,5 @@ def publipost():
 
         return jsonify({'error': False})
     except Exception as e:
-        import traceback
         traceback.print_exc()
         return jsonify({'error': True})
