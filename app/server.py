@@ -76,3 +76,6 @@ def publipost():
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': True}), 500
+
+    finally:
+        os.remove(output)
