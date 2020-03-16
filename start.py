@@ -1,4 +1,4 @@
-from server import app
+from app import app
 from gevent.pywsgi import WSGIServer
 import sys
 
