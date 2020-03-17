@@ -51,7 +51,7 @@ class Template:
         renderer = docxTemplate(self.filename)
         # here we restore the content of the docx inside the new renderer
         renderer.render(data)
-        return doc
+        return renderer
 
     def render(self, data: Dict[str, object]) -> str:
         save_path = os.path.join(self.temp_dir, str(uuid.uuid4()))
