@@ -47,8 +47,8 @@ class Template:
 
         # kinda ugly i know but
         # we can avoid re reading the file from the disk as we already cached it
-        # doc = copy.copy(self.doc.docx)
-        renderer = docxTemplate(self.filename)
+        doc = copy.deepcopy(self.doc.docx)
+        renderer = docxTemplate(document=doc)
         # here we restore the content of the docx inside the new renderer
         renderer.render(data)
         return renderer
