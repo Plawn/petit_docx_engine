@@ -2,7 +2,7 @@ from docxtpl import DocxTemplate as _docxTemplate
 import re
 import copy
 from . import utils
-from typing import Dict
+from typing import Dict, Set
 import docx
 import os
 import uuid
