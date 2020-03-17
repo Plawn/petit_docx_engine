@@ -23,16 +23,17 @@ class docxTemplate(_docxTemplate):
 
 class Template:
     def __init__(self, filename: str):
+        self.filename = filename
         self.doc:docxTemplate = None
         self.fields: Set[str] = set()
-        self.init(filename)
+        self.init()
         self.temp_dir = 'temp'
 
-    def init(self, filename: str) -> None:
+    def init(self) -> None:
         """Loads the document from the filename and inits it's values
         """
         # pulled filename
-        self.doc = docxTemplate(filename)
+        self.doc = docxTemplate(self.filename)
         self.__load_fields()
 
     def __load_fields(self):
@@ -46,11 +47,11 @@ class Template:
 
         # kinda ugly i know but
         # we can avoid re reading the file from the disk as we already cached it
-        doc = copy.copy(self.doc.docx)
+        doc = copy.deepcopy(self.doc.docx)
         renderer = docxTemplate(document=doc)
         # here we restore the content of the docx inside the new renderer
         renderer.render(data)
-        return doc
+        return renderer
 
     def render(self, data: Dict[str, object]) -> str:
         save_path = os.path.join(self.temp_dir, str(uuid.uuid4()))
