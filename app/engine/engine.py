@@ -29,7 +29,7 @@ class Template:
         self.init()
         self.temp_dir = 'temp'
 
-    def init(self, filename: str) -> None:
+    def init(self) -> None:
         """Loads the document from the filename and inits it's values
         """
         # pulled filename
