@@ -51,6 +51,15 @@ La requête contient donc une liste d'objet contenant ces deux informations.
 
 Il renvoit une liste de success et error
 
+### POST /get_placeholders
+
+```json
+{
+    "name": "template_name"
+}
+```
+
+Renvoie toutes les variables du document sous la forme d'une liste de string
 
 ### POST /publipost
 
