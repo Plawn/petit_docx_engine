@@ -26,7 +26,7 @@ def configure():
     access_key = data['access_key']
     pass_key = data['pass_key']
     secure = data['secure']
-    minio_client = minio.Minio(host, access_key, pass_key, secure)
+    minio_client = minio.Minio(host, access_key, pass_key, secure=secure)
     # checking that the instance is correct
     minio_client.list_buckets()
     return jsonify({'error': False}), 200
