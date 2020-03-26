@@ -100,5 +100,5 @@ def publipost():
 
 
 @app.route('/live', methods=['GET'])
-def get_token():
+def is_live():
     return ('OK', 200) if minio_client is not None else ('KO', 402)
