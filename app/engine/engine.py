@@ -12,7 +12,7 @@ class docxTemplate(_docxTemplate):
     """Proxying the real class in order to be able to copy.copy the template docx file
     """
 
-    def __init__(self, filename: str = '', document:docx.Document=None):
+    def __init__(self, filename: str = '', document: docx.Document = None):
         self.crc_to_new_media = {}
         self.crc_to_new_embedded = {}
         self.pic_to_replace = {}
@@ -22,12 +22,13 @@ class docxTemplate(_docxTemplate):
 
 
 class Template:
+    temp_dir = 'temp'
+
     def __init__(self, filename: str):
         self.filename = filename
-        self.doc:docxTemplate = None
+        self.doc: docxTemplate = None
         self.fields: Set[str] = set()
         self.init()
-        self.temp_dir = 'temp'
 
     def init(self) -> None:
         """Loads the document from the filename and inits it's values
