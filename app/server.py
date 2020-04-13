@@ -28,6 +28,9 @@ TEMPLATE_FOLDER = 'templates'
 if not os.path.exists(TEMPLATE_FOLDER):
     os.mkdir(TEMPLATE_FOLDER)
 
+# ensure we can save temporary in this folder
+if not os.path.exists('temp'):
+    os.mkdir('temp')
 
 app = Flask(__name__)
 
@@ -97,6 +100,7 @@ def get_placeholders():
 def publipost():
     body: Dict[str, object] = request.get_json()
     output = None
+    response = jsonify({'error': True}), 500
     try:
 
         data: str = body['data']
@@ -111,18 +115,18 @@ def publipost():
         if push_result:
             # should make abstraction to push the result here
             minio_client.fput_object(output_bucket, output_name, output)
-            return jsonify({'error': False})
+            response = jsonify({'error': False})
         else:
             # not used for now
             # should push the file back
-            return jsonify({'result': 'OK'})
+            response = jsonify({'result': 'OK'})
     except Exception as e:
         logging.error(traceback.format_exc())
-        return jsonify({'error': True}), 500
 
     finally:
         if output is not None:
             os.remove(output)
+    return response
 
 
 @app.route('/list', methods=['GET'])
