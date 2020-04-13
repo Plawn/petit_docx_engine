@@ -58,10 +58,15 @@ def configure():
 def pull_template(template_infos: dict):
     remote_bucket = template_infos['bucket_name']
     template_name = template_infos['template_name']
+    exposed_as = template_infos['exposed_as']
     doc = minio_client.get_object(remote_bucket, template_name)
     name = make_name(template_name)
     download_minio_stream(doc, name)
-    db[template_name] = TemplateContainer(Template(name), time.time())
+    template = Template(name)
+    db[exposed_as] = TemplateContainer(template, time.time())
+    # removing the file -> no need to persist it, it's loaded in memory now
+    os.remove(name)
+    return template
 
 
 @app.route('/load_templates', methods=['POST'])
@@ -71,11 +76,14 @@ def load_template():
     failed = []
     for template_infos in data:
         try:
-            pull_template(template_infos)
-            success.append(template_infos)
+            template = pull_template(template_infos)
+            success.append({
+                'template_name': template_infos['exposed_as'],
+                'fields': template.fields
+            })
         except:
             logging.error(traceback.format_exc())
-            failed.append(template_infos)
+            failed.append({'template_name': template_infos['exposed_as']})
     return jsonify({'success': success, 'failed': failed})
 
 
@@ -121,15 +129,16 @@ def publipost():
 def get_templates():
     return jsonify({key: value.pulled_at for key, value in db.items()})
 
+
 @app.route('/remove_template', methods=['DELETE'])
 def remove_template():
     js = request.get_json()
-    try :
-        template_name:str = js['template_name']
+    try:
+        template_name: str = js['template_name']
         del db[template_name]
-        return jsonify({'error':False})
+        return jsonify({'error': False})
     except:
-        return jsonify({'error':True}), 400
+        return jsonify({'error': True}), 400
 
 
 @app.route('/live', methods=['GET'])
