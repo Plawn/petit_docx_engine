@@ -2,7 +2,7 @@ import traceback
 from flask import Flask, request, jsonify
 import minio
 from .engine import Template
-from .utils import download_minio_stream
+from .utils import download_minio_stream, ensure_folder_exists
 from typing import List, Dict
 import os
 import logging
@@ -23,14 +23,11 @@ class TemplateContainer:
 db: Dict[str, TemplateContainer] = {}
 
 TEMPLATE_FOLDER = 'templates'
-
+TEMP_FOLDER = 'temp'
 # ensure we can pull the data in the folder
-if not os.path.exists(TEMPLATE_FOLDER):
-    os.mkdir(TEMPLATE_FOLDER)
-
+ensure_folder_exists(TEMPLATE_FOLDER)
 # ensure we can save temporary in this folder
-if not os.path.exists('temp'):
-    os.mkdir('temp')
+ensure_folder_exists(TEMP_FOLDER)
 
 app = Flask(__name__)
 
