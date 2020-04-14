@@ -7,7 +7,6 @@ import docx
 import os
 import uuid
 
-
 class docxTemplate(_docxTemplate):
     """Proxying the real class in order to be able to copy.copy the template docx file
     """
@@ -28,18 +27,33 @@ class Template:
         self.filename = filename
         self.doc: docxTemplate = None
         self.fields: Set[str] = set()
-        self.init()
-
-    def init(self) -> None:
-        """Loads the document from the filename and inits it's values
-        """
         # pulled filename
+        # Loads the document from the filename and inits it's values
         self.doc = docxTemplate(self.filename)
         self.__load_fields()
+       
 
     def __load_fields(self):
-        self.fields = list(utils.xml_cleaner(set(re.findall(
+        # here we get all the fields in the styles and paragraphs
+        fields = set(utils.xml_cleaner(set(re.findall(
             r"\{{(.*?)\}}", self.doc.get_xml(), re.MULTILINE))))
+        
+        
+        all_text = set()
+        doc = docx.Document(self.filename)
+        all_text.update(utils.get_text_from_doc_part(doc))
+
+        for section in doc.sections:
+            # not entirely working
+            all_text.update(utils.get_text_from_doc_part(section.footer))
+            # working as expected
+            all_text.update(utils.get_text_from_doc_part(section.header))
+
+        others = set(re.findall(
+            r"\{{(.*?)\}}", ''.join(all_text), re.MULTILINE))
+
+        fields.update(others)
+        self.fields = list(fields)
 
     def __apply_template(self, data: Dict[str, str]) -> docxTemplate:
         """

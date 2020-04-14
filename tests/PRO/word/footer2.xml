@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<w:ftr xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex" xmlns:cx1="http://schemas.microsoft.com/office/drawing/2015/9/8/chartex" xmlns:cx2="http://schemas.microsoft.com/office/drawing/2015/10/21/chartex" xmlns:cx3="http://schemas.microsoft.com/office/drawing/2016/5/9/chartex" xmlns:cx4="http://schemas.microsoft.com/office/drawing/2016/5/10/chartex" xmlns:cx5="http://schemas.microsoft.com/office/drawing/2016/5/11/chartex" xmlns:cx6="http://schemas.microsoft.com/office/drawing/2016/5/12/chartex" xmlns:cx7="http://schemas.microsoft.com/office/drawing/2016/5/13/chartex" xmlns:cx8="http://schemas.microsoft.com/office/drawing/2016/5/14/chartex" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:aink="http://schemas.microsoft.com/office/drawing/2016/ink" xmlns:am3d="http://schemas.microsoft.com/office/drawing/2017/model3d" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:w16cid="http://schemas.microsoft.com/office/word/2016/wordml/cid" xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 w15 w16se w16cid wp14">
+    <w:sdt>
+        <w:sdtPr>
+            <w:id w:val="-1812781085" />
+            <w:docPartObj>
+                <w:docPartGallery w:val="Page Numbers (Bottom of Page)" />
+                <w:docPartUnique />
+            </w:docPartObj>
+        </w:sdtPr>
+        <w:sdtEndPr>
+            <w:rPr>
+                <w:noProof />
+            </w:rPr>
+        </w:sdtEndPr>
+        <w:sdtContent>
+            <w:p w14:paraId="44F4C746" w14:textId="01486A85" w:rsidR="006771C2" w:rsidRPr="005C49C4" w:rsidRDefault="006771C2" w:rsidP="006770E6">
+                <w:pPr>
+                    <w:tabs>
+                        <w:tab w:val="center" w:pos="4536" />
+                    </w:tabs>
+                    <w:spacing w:before="0" />
+                    <w:ind w:right="360" w:firstLine="13" />
+                    <w:contextualSpacing />
+                    <w:rPr>
+                        <w:noProof />
+                    </w:rPr>
+                </w:pPr>
+            </w:p>
+            <w:p w14:paraId="64FC6978" w14:textId="3AECAD34" w:rsidR="006771C2" w:rsidRDefault="00004A1B" w:rsidP="00004A1B">
+                <w:pPr>
+                    <w:tabs>
+                        <w:tab w:val="center" w:pos="4536" />
+                    </w:tabs>
+                    <w:spacing w:before="0" />
+                    <w:ind w:left="1" w:right="851" w:firstLine="1" />
+                    <w:contextualSpacing />
+                    <w:rPr>
+                        <w:rFonts w:eastAsia="Times New Roman" w:cs="Arial" />
+                        <w:b />
+                        <w:bCs />
+                        <w:color w:val="000000" />
+                        <w:sz w:val="20" />
+                    </w:rPr>
+                </w:pPr>
+                <w:r>
+                    <w:rPr>
+                        <w:rFonts w:eastAsia="Times New Roman" w:cs="Arial" />
+                        <w:b />
+                        <w:bCs />
+                        <w:color w:val="000000" />
+                        <w:sz w:val="20" />
+                    </w:rPr>
+                    <w:tab />
+                </w:r>
+                <w:r w:rsidR="006771C2" w:rsidRPr="005C49C4">
+                    <w:rPr>
+                        <w:rFonts w:eastAsia="Times New Roman" w:cs="Arial" />
+                        <w:b />
+                        <w:bCs />
+                        <w:color w:val="000000" />
+                        <w:sz w:val="20" />
+                    </w:rPr>
+                    <w:t>« Tous droits de reproduction réservés »</w:t>
+                </w:r>
+            </w:p>
+            <w:p w14:paraId="4D07AF7C" w14:textId="77777777" w:rsidR="006771C2" w:rsidRDefault="006771C2" w:rsidP="009F56A1">
+                <w:pPr>
+                    <w:tabs>
+                        <w:tab w:val="center" w:pos="4536" />
+                        <w:tab w:val="left" w:pos="7230" />
+                    </w:tabs>
+                    <w:spacing w:before="0" />
+                    <w:ind w:right="851" w:firstLine="0" />
+                    <w:contextualSpacing />
+                    <w:jc w:val="left" />
+                    <w:rPr>
+                        <w:rFonts w:eastAsia="Times New Roman" w:cs="Arial" />
+                        <w:b />
+                        <w:bCs />
+                        <w:color w:val="000000" />
+                        <w:sz w:val="20" />
+                    </w:rPr>
+                </w:pPr>
+            </w:p>
+            <w:p w14:paraId="08E3897A" w14:textId="1C1DB5DC" w:rsidR="006771C2" w:rsidRDefault="006771C2" w:rsidP="00CE19D9">
+                <w:pPr>
+                    <w:tabs>
+                        <w:tab w:val="center" w:pos="4536" />
+                        <w:tab w:val="left" w:pos="7230" />
+                    </w:tabs>
+                    <w:ind w:right="851" w:firstLine="0" />
+                    <w:jc w:val="left" />
+                    <w:rPr>
+                        <w:rFonts w:eastAsia="Times New Roman" w:cs="Arial" />
+                        <w:b />
+                        <w:bCs />
+                        <w:color w:val="000000" />
+                        <w:sz w:val="20" />
+                    </w:rPr>
+                </w:pPr>
+            </w:p>
+            <w:p w14:paraId="3AD676AA" w14:textId="77777777" w:rsidR="006771C2" w:rsidRDefault="006771C2" w:rsidP="00CE19D9">
+                <w:pPr>
+                    <w:tabs>
+                        <w:tab w:val="center" w:pos="4536" />
+                        <w:tab w:val="left" w:pos="7230" />
+                    </w:tabs>
+                    <w:ind w:right="851" w:firstLine="0" />
+                    <w:jc w:val="left" />
+                    <w:rPr>
+                        <w:rFonts w:eastAsia="Times New Roman" w:cs="Arial" />
+                        <w:b />
+                        <w:bCs />
+                        <w:color w:val="000000" />
+                        <w:sz w:val="20" />
+                    </w:rPr>
+                </w:pPr>
+            </w:p>
+            <w:p w14:paraId="58945111" w14:textId="5C7F6D55" w:rsidR="006771C2" w:rsidRDefault="00E710C0" w:rsidP="00CE19D9">
+                <w:pPr>
+                    <w:tabs>
+                        <w:tab w:val="center" w:pos="4536" />
+                        <w:tab w:val="left" w:pos="7230" />
+                    </w:tabs>
+                    <w:ind w:right="851" w:firstLine="0" />
+                    <w:jc w:val="left" />
+                </w:pPr>
+            </w:p>
+        </w:sdtContent>
+    </w:sdt>
+</w:ftr>
