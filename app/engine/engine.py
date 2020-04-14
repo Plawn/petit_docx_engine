@@ -39,20 +39,20 @@ class Template:
             r"\{{(.*?)\}}", self.doc.get_xml(), re.MULTILINE))))
         
         
-        all_text = set()
-        doc = docx.Document(self.filename)
-        all_text.update(utils.get_text_from_doc_part(doc))
+        # all_text = set()
+        # doc = docx.Document(self.filename)
+        # all_text.update(utils.get_text_from_doc_part(doc))
 
-        for section in doc.sections:
-            # not entirely working
-            all_text.update(utils.get_text_from_doc_part(section.footer))
-            # working as expected
-            all_text.update(utils.get_text_from_doc_part(section.header))
+        # for section in doc.sections:
+        #     # not entirely working
+        #     all_text.update(utils.get_text_from_doc_part(section.footer))
+        #     # working as expected
+        #     all_text.update(utils.get_text_from_doc_part(section.header))
 
-        others = set(re.findall(
-            r"\{{(.*?)\}}", ''.join(all_text), re.MULTILINE))
+        # others = set(re.findall(
+        #     r"\{{(.*?)\}}", ''.join(all_text), re.MULTILINE))
 
-        fields.update(others)
+        # fields.update(others)
         self.fields = list(fields)
 
     def __apply_template(self, data: Dict[str, str]) -> docxTemplate:
