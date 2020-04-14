@@ -7,6 +7,8 @@ import docx
 import os
 import uuid
 
+
+# TODO: better way to cache the file
 class docxTemplate(_docxTemplate):
     """Proxying the real class in order to be able to copy.copy the template docx file
     """
@@ -14,6 +16,7 @@ class docxTemplate(_docxTemplate):
     def __init__(self, filename: str = '', document: docx.Document = None):
         self.crc_to_new_media = {}
         self.crc_to_new_embedded = {}
+        self.zipname_to_replace = {}
         self.pic_to_replace = {}
         self.pic_map = {}
         self.docx = document if document is not None else docx.Document(
@@ -39,20 +42,20 @@ class Template:
             r"\{{(.*?)\}}", self.doc.get_xml(), re.MULTILINE))))
         
         
-        # all_text = set()
-        # doc = docx.Document(self.filename)
-        # all_text.update(utils.get_text_from_doc_part(doc))
+        all_text = set()
+        doc = docx.Document(self.filename)
+        all_text.update(utils.get_text_from_doc_part(doc))
 
-        # for section in doc.sections:
-        #     # not entirely working
-        #     all_text.update(utils.get_text_from_doc_part(section.footer))
-        #     # working as expected
-        #     all_text.update(utils.get_text_from_doc_part(section.header))
+        for section in doc.sections:
+            # not entirely working
+            all_text.update(utils.get_text_from_doc_part(section.footer))
+            # working as expected
+            all_text.update(utils.get_text_from_doc_part(section.header))
 
-        # others = set(re.findall(
-        #     r"\{{(.*?)\}}", ''.join(all_text), re.MULTILINE))
+        others = set(re.findall(
+            r"\{{(.*?)\}}", ''.join(all_text), re.MULTILINE))
 
-        # fields.update(others)
+        fields.update(others)
         self.fields = list(fields)
 
     def __apply_template(self, data: Dict[str, str]) -> docxTemplate:
