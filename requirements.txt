@@ -1,5 +1,5 @@
 minio
 flask
-docxtpl
-docx
+docxtpl==0.8.1
+python-docx==0.8.10
 gevent
