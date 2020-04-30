@@ -1,13 +1,16 @@
+import logging
+import os
+import io
+import time
 import traceback
-from flask import Flask, request, jsonify
+from dataclasses import dataclass
+from typing import Dict, List
+
 import minio
+from flask import Flask, jsonify, request
+
 from .engine import Template
 from .utils import download_minio_stream, ensure_folder_exists
-from typing import List, Dict
-import os
-import logging
-from dataclasses import dataclass
-import time
 
 minio_client: minio.Minio = None
 
@@ -61,11 +64,12 @@ def pull_template(template_infos: dict):
     exposed_as = template_infos['exposed_as']
     doc = minio_client.get_object(remote_bucket, template_name)
     name = make_name(template_name)
-    download_minio_stream(doc, name)
-    template = Template(name)
+    _file = io.BytesIO()
+    download_minio_stream(doc, _file)
+    template = Template(_file)
     db[exposed_as] = TemplateContainer(template, time.time())
     # removing the file -> no need to persist it, it's loaded in memory now
-    os.remove(name)
+    # os.remove(name)
     return template
 
 
@@ -108,10 +112,9 @@ def publipost():
         options = body.get('options', [])
         push_result = body.get('push_result', True)
         output = db[template_name].templater.render(data)
-
         if push_result:
             # should make abstraction to push the result here
-            minio_client.fput_object(output_bucket, output_name, output)
+            minio_client.put_object(output_bucket, output_name, output, length=output.getbuffer().nbytes)
             response = jsonify({'error': False})
         else:
             # not used for now
@@ -120,9 +123,6 @@ def publipost():
     except Exception as e:
         logging.error(traceback.format_exc())
 
-    finally:
-        if output is not None:
-            os.remove(output)
     return response
 
 

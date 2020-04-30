@@ -1,9 +1,9 @@
 import os
+import io
 
-def download_minio_stream(stream, filename: str) -> None:
-    with open(filename, 'wb') as file_data:
-        for d in stream.stream(32*1024):
-            file_data.write(d)
+def download_minio_stream(stream, _file: io.BytesIO) -> None:
+    for d in stream.stream(32*1024):
+        _file.write(d)
 
 
 def ensure_folder_exists(folder_name:str):
