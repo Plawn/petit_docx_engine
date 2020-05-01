@@ -112,9 +112,10 @@ def publipost():
         options = body.get('options', [])
         push_result = body.get('push_result', True)
         output = db[template_name].templater.render(data)
+        d = output.getvalue()
         if push_result:
             # should make abstraction to push the result here
-            minio_client.put_object(output_bucket, output_name, output, length=output.getbuffer().nbytes)
+            minio_client.put_object(output_bucket, output_name, d, length=len(d))
             response = jsonify({'error': False})
         else:
             # not used for now
