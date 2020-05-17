@@ -17,6 +17,7 @@ class Template:
         self.fields: List[str] = list()
         self.file = _file
         self.__load_fields()
+       
 
     def __load_fields(self):
         doc = DocxTemplate(self.file)

@@ -32,6 +32,17 @@ ensure_folder_exists(TEMPLATE_FOLDER)
 # ensure we can save temporary in this folder
 ensure_folder_exists(TEMP_FOLDER)
 
+# in memory database
+# rebuilded at each boot
+db: Dict[str, TemplateContainer] = {}
+
+TEMPLATE_FOLDER = 'templates'
+TEMP_FOLDER = 'temp'
+# ensure we can pull the data in the folder
+ensure_folder_exists(TEMPLATE_FOLDER)
+# ensure we can save temporary in this folder
+ensure_folder_exists(TEMP_FOLDER)
+
 app = Flask(__name__)
 
 
