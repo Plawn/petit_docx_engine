@@ -1,6 +1,6 @@
+import io
 import logging
 import os
-import io
 import time
 import traceback
 from dataclasses import dataclass
@@ -35,13 +35,6 @@ ensure_folder_exists(TEMP_FOLDER)
 # in memory database
 # rebuilded at each boot
 db: Dict[str, TemplateContainer] = {}
-
-TEMPLATE_FOLDER = 'templates'
-TEMP_FOLDER = 'temp'
-# ensure we can pull the data in the folder
-ensure_folder_exists(TEMPLATE_FOLDER)
-# ensure we can save temporary in this folder
-ensure_folder_exists(TEMP_FOLDER)
 
 app = Flask(__name__)
 
@@ -112,7 +105,6 @@ def get_placeholders():
 def publipost():
     body: Dict[str, object] = request.get_json()
     output = None
-    response = jsonify({'error': True}), 500
     try:
 
         data: str = body['data']
@@ -127,16 +119,17 @@ def publipost():
         output.seek(0)
         if push_result:
             # should make abstraction to push the result here
-            minio_client.put_object(output_bucket, output_name, output, length=length)
-            response = jsonify({'error': False})
+            minio_client.put_object(
+                output_bucket, output_name, output, length=length
+            )
+            return jsonify({'error': False})
         else:
             # not used for now
             # should push the file back
-            response = jsonify({'result': 'OK'})
+            return jsonify({'result': 'OK'})
     except Exception as e:
         logging.error(traceback.format_exc())
-
-    return response
+        return jsonify({'error':traceback.format_exc()}), 500
 
 
 @app.route('/list', methods=['GET'])
