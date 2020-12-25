@@ -8,12 +8,9 @@ import minio
 from fastapi import FastAPI, Response
 from fastapi.responses import JSONResponse
 
-from .dto import ConfigureDTO, DeleteTemplate
+from .dto import ConfigureDTO, DeleteTemplate, GetPlaceholderDTO, PublipostDTO, TemplateInfos
 from .engine import Template
 from .utils import download_minio_stream
-
-# from starlette.responses import JSONResponse
-
 
 
 class Context:
@@ -55,58 +52,48 @@ def configure(body: ConfigureDTO):
         return JSONResponse({'error': True}, 400)
 
 
-def pull_template(template_infos: dict):
-    remote_bucket = template_infos['bucket_name']
-    template_name = template_infos['template_name']
-    exposed_as = template_infos['exposed_as']
-    doc = context.minio_client.get_object(remote_bucket, template_name)
+def pull_template(template_infos: TemplateInfos):
+    doc = context.minio_client.get_object(
+        template_infos.remote_bucket, template_infos.template_name)
     _file = download_minio_stream(doc)
     template = Template(_file)
-    db[exposed_as] = TemplateContainer(template, time.time())
+    db[template_infos.exposed_as] = TemplateContainer(template, time.time())
     return template
 
 
 @app.post('/load_templates')
-def load_template(data: List[dict]):
+def load_template(data: List[TemplateInfos]):
     success = []
     failed = []
     for template_infos in data:
         try:
             template = pull_template(template_infos)
             success.append({
-                'template_name': template_infos['exposed_as'],
+                'template_name': template_infos.exposed_as,
                 'fields': template.fields
             })
         except:
             logging.error(traceback.format_exc())
-            failed.append({'template_name': template_infos['exposed_as']})
+            failed.append({'template_name': template_infos.exposed_as})
     return JSONResponse({'success': success, 'failed': failed})
 
 
 @app.post('/get_placeholders')
-def get_placeholders(data: dict):
-    return JSONResponse(db[data['name']].templater.fields)
+def get_placeholders(data: GetPlaceholderDTO):
+    return JSONResponse(db[data.name].templater.fields)
 
 
 @app.post('/publipost')
-def publipost(body: dict):
+def publipost(body: PublipostDTO):
     output = None
     try:
-
-        data: str = body['data']
-        template_name: str = body['template_name']
-        output_bucket: str = body['output_bucket']
-        output_name: str = body['output_name']
-        # don't actually know if will get used
-        options = body.get('options', [])
-        push_result = body.get('push_result', True)
-        output = db[template_name].templater.render(data)
+        output = db[body.template_name].templater.render(body.data)
         length = len(output.getvalue())
         output.seek(0)
-        if push_result:
+        if body.push_result:
             # should make abstraction to push the result here
             context.minio_client.put_object(
-                output_bucket, output_name, output, length=length
+                body.output_bucket, body.output_name, output, length=length
             )
             return JSONResponse({'error': False})
         else:

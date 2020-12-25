@@ -1,13 +1,9 @@
-import copy
-import os
 import io
 import re
-import uuid
-from typing import *
+from typing import List, Set, Dict
 
 import docx
 from docx.document import Document
-from docx.parts.document import DocumentPart
 from docxtpl import DocxTemplate
 
 from . import utils
@@ -29,14 +25,16 @@ class Template:
         all_text: Set[str] = set()
         doc: Document = docx.Document(self.file)
         all_text.update(utils.get_text_from_doc_part(doc))
-        
+
         for section in doc.sections:
             # not entirely working
             all_text.update(utils.get_text_from_doc_part(section.footer))
-            all_text.update(utils.get_text_from_doc_part(section.first_page_footer))
+            all_text.update(utils.get_text_from_doc_part(
+                section.first_page_footer))
             # working as expected
             all_text.update(utils.get_text_from_doc_part(section.header))
-            all_text.update(utils.get_text_from_doc_part(section.first_page_header))
+            all_text.update(utils.get_text_from_doc_part(
+                section.first_page_header))
 
         others = set(
             re.findall(r"\{{(.*?)\}}", ''.join(all_text), re.MULTILINE)

@@ -16,7 +16,7 @@ def xml_cleaner(words: Iterable) -> Generator[str, None, None]:
         yield ''.join(chars)
 
 
-def get_text_from_table(table):
+def get_text_from_table(table) -> Generator[str, None, None]:
     for row in table.rows:
         for cell in row.cells:
             yield cell.text
