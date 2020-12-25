@@ -29,6 +29,6 @@ class GetPlaceholderDTO(BaseModel):
 
 
 class TemplateInfos(BaseModel):
-    remote_bucket: str
+    bucket_name: str
     template_name: str
     exposed_as: str

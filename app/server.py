@@ -8,7 +8,8 @@ import minio
 from fastapi import FastAPI, Response
 from fastapi.responses import JSONResponse
 
-from .dto import ConfigureDTO, DeleteTemplate, GetPlaceholderDTO, PublipostDTO, TemplateInfos
+from .dto import (ConfigureDTO, DeleteTemplate, GetPlaceholderDTO,
+                  PublipostDTO, TemplateInfos)
 from .engine import Template
 from .utils import download_minio_stream
 
@@ -54,7 +55,7 @@ def configure(body: ConfigureDTO):
 
 def pull_template(template_infos: TemplateInfos):
     doc = context.minio_client.get_object(
-        template_infos.remote_bucket, template_infos.template_name)
+        template_infos.bucket_name, template_infos.template_name)
     _file = download_minio_stream(doc)
     template = Template(_file)
     db[template_infos.exposed_as] = TemplateContainer(template, time.time())
