@@ -12,4 +12,4 @@ RUN mkdir templates
 
 EXPOSE 5000
 
-ENTRYPOINT ["uvicorn", "app.server:app", "--port" , "5000"]
+ENTRYPOINT ["uvicorn", "app.server:app", "--host", "0.0.0.0", "--port" , "5000"]
