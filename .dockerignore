@@ -1,0 +1,6 @@
+tests
+*.docx
+*.sh
+*.yaml
+test.py
+*.md
