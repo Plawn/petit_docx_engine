@@ -1,4 +1,4 @@
-FROM python:3.7.2-slim
+FROM python:3.8.6-slim
 
 COPY ./requirements.txt /api/requirements.txt
 
@@ -12,4 +12,4 @@ RUN mkdir templates
 
 EXPOSE 5000
 
-ENTRYPOINT ["python3.7", "start.py", "5000"]
+ENTRYPOINT ["uvicorn", "app.server:app", "--port" , "5000"]

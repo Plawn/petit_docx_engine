@@ -1,18 +1,27 @@
-import io
 import logging
-import os
 import time
 import traceback
 from dataclasses import dataclass
 from typing import Dict, List
 
 import minio
-from flask import Flask, jsonify, request
+from fastapi import FastAPI, Response
+from fastapi.responses import JSONResponse
 
+from .dto import ConfigureDTO, DeleteTemplate
 from .engine import Template
-from .utils import download_minio_stream, ensure_folder_exists
+from .utils import download_minio_stream
 
-minio_client: minio.Minio = None
+# from starlette.responses import JSONResponse
+
+
+
+class Context:
+    def __init__(self):
+        self.minio_client: minio.Minio = None
+
+
+context = Context()
 
 
 @dataclass
@@ -25,61 +34,40 @@ class TemplateContainer:
 # rebuilded at each boot
 db: Dict[str, TemplateContainer] = {}
 
-TEMPLATE_FOLDER = 'templates'
-TEMP_FOLDER = 'temp'
-# ensure we can pull the data in the folder
-ensure_folder_exists(TEMPLATE_FOLDER)
-# ensure we can save temporary in this folder
-ensure_folder_exists(TEMP_FOLDER)
 
 # in memory database
 # rebuilded at each boot
 db: Dict[str, TemplateContainer] = {}
 
-app = Flask(__name__)
+app = FastAPI()
 
 
-def make_name(filename: str) -> str:
-    return os.path.join(TEMPLATE_FOLDER, filename)
-
-
-@app.route('/configure', methods=['POST'])
-def configure():
-    # maybe have a global conf object instead
-    global minio_client
-    data = request.get_json()
-
-    host = data['host']
-    access_key = data['access_key']
-    pass_key = data['pass_key']
-    secure = data['secure']
+@app.post('/configure')
+def configure(body: ConfigureDTO):
     try:
-        minio_client = minio.Minio(host, access_key, pass_key, secure=secure)
+        minio_client = minio.Minio(
+            body.host, body.access_key, body.pass_key, secure=body.secure)
         # checking that the instance is correct
         minio_client.list_buckets()
+        context.minio_client = minio_client
+        return JSONResponse({'error': False}, 200)
     except:
-        minio_client = None
-    return jsonify({'error': False}), 200
+        return JSONResponse({'error': True}, 400)
 
 
 def pull_template(template_infos: dict):
     remote_bucket = template_infos['bucket_name']
     template_name = template_infos['template_name']
     exposed_as = template_infos['exposed_as']
-    doc = minio_client.get_object(remote_bucket, template_name)
-    name = make_name(template_name)
-    _file = io.BytesIO()
-    download_minio_stream(doc, _file)
+    doc = context.minio_client.get_object(remote_bucket, template_name)
+    _file = download_minio_stream(doc)
     template = Template(_file)
     db[exposed_as] = TemplateContainer(template, time.time())
-    # removing the file -> no need to persist it, it's loaded in memory now
-    # os.remove(name)
     return template
 
 
-@app.route('/load_templates', methods=['POST'])
-def load_template():
-    data: List[dict] = request.get_json()
+@app.post('/load_templates')
+def load_template(data: List[dict]):
     success = []
     failed = []
     for template_infos in data:
@@ -92,18 +80,16 @@ def load_template():
         except:
             logging.error(traceback.format_exc())
             failed.append({'template_name': template_infos['exposed_as']})
-    return jsonify({'success': success, 'failed': failed})
+    return JSONResponse({'success': success, 'failed': failed})
 
 
-@app.route('/get_placeholders', methods=['POST'])
-def get_placeholders():
-    data = request.get_json()
-    return jsonify(db[data['name']].templater.fields)
+@app.post('/get_placeholders')
+def get_placeholders(data: dict):
+    return JSONResponse(db[data['name']].templater.fields)
 
 
-@app.route('/publipost', methods=['POST'])
-def publipost():
-    body: Dict[str, object] = request.get_json()
+@app.post('/publipost')
+def publipost(body: dict):
     output = None
     try:
 
@@ -119,35 +105,35 @@ def publipost():
         output.seek(0)
         if push_result:
             # should make abstraction to push the result here
-            minio_client.put_object(
+            context.minio_client.put_object(
                 output_bucket, output_name, output, length=length
             )
-            return jsonify({'error': False})
+            return JSONResponse({'error': False})
         else:
             # not used for now
             # should push the file back
-            return jsonify({'result': 'OK'})
+            return JSONResponse({'result': 'OK'})
     except Exception as e:
         logging.error(traceback.format_exc())
-        return jsonify({'error':traceback.format_exc()}), 500
+        return JSONResponse({'error': traceback.format_exc()}, 500)
 
 
-@app.route('/list', methods=['GET'])
+@app.get('/list')
 def get_templates():
-    return jsonify({key: value.pulled_at for key, value in db.items()})
+    return JSONResponse({
+        key: value.pulled_at for key, value in db.items()
+    })
 
 
-@app.route('/remove_template', methods=['DELETE'])
-def remove_template():
-    js = request.get_json()
+@app.delete('/remove_template')
+def remove_template(body: DeleteTemplate):
     try:
-        template_name: str = js['template_name']
-        del db[template_name]
-        return jsonify({'error': False})
+        del db[body.template_name]
+        return JSONResponse({'error': False})
     except:
-        return jsonify({'error': True}), 400
+        return JSONResponse({'error': True}, 400)
 
 
-@app.route('/live', methods=['GET'])
+@app.get('/live')
 def is_live():
-    return ('OK', 200) if minio_client is not None else ('KO', 402)
+    return Response('OK', 200) if context.minio_client is not None else Response('KO', 402)

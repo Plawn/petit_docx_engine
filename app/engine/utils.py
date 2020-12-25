@@ -1,4 +1,4 @@
-from typing import Generator, Iterable
+from typing import Generator, Iterable, Set
 
 
 def xml_cleaner(words: Iterable) -> Generator[str, None, None]:
@@ -22,10 +22,10 @@ def get_text_from_table(table):
             yield cell.text
 
 
-def get_text_from_doc_part(doc_part):
-    res = set()
+def get_text_from_doc_part(doc_part) -> Set[str]:
+    res: Set[str] = set()
     for p in doc_part.paragraphs:
-            res.add(p.text)
+        res.add(p.text)
     # getting all text from tables
     for table in doc_part.tables:
         for text in get_text_from_table(table):

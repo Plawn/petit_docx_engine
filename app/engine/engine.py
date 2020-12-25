@@ -6,6 +6,8 @@ import uuid
 from typing import *
 
 import docx
+from docx.document import Document
+from docx.parts.document import DocumentPart
 from docxtpl import DocxTemplate
 
 from . import utils
@@ -17,7 +19,6 @@ class Template:
         self.fields: List[str] = list()
         self.file = _file
         self.__load_fields()
-       
 
     def __load_fields(self):
         doc = DocxTemplate(self.file)
@@ -25,18 +26,21 @@ class Template:
         fields = set(utils.xml_cleaner(set(re.findall(
             r"\{{(.*?)\}}", doc.get_xml(), re.MULTILINE))))
 
-        all_text = set()
-        doc = docx.Document(self.file)
+        all_text: Set[str] = set()
+        doc: Document = docx.Document(self.file)
         all_text.update(utils.get_text_from_doc_part(doc))
-
+        
         for section in doc.sections:
             # not entirely working
             all_text.update(utils.get_text_from_doc_part(section.footer))
+            all_text.update(utils.get_text_from_doc_part(section.first_page_footer))
             # working as expected
             all_text.update(utils.get_text_from_doc_part(section.header))
+            all_text.update(utils.get_text_from_doc_part(section.first_page_header))
 
-        others = set(re.findall(
-            r"\{{(.*?)\}}", ''.join(all_text), re.MULTILINE))
+        others = set(
+            re.findall(r"\{{(.*?)\}}", ''.join(all_text), re.MULTILINE)
+        )
 
         fields.update(others)
         self.fields = list(fields)

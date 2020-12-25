@@ -1,1 +1,1 @@
-python3.7 start.py 3002
+uvicorn app.server:app --port 5000 --reload
