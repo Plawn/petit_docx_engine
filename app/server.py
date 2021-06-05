@@ -32,11 +32,6 @@ class TemplateContainer:
 # rebuilded at each boot
 db: Dict[str, TemplateContainer] = {}
 
-
-# in memory database
-# rebuilded at each boot
-db: Dict[str, TemplateContainer] = {}
-
 app = FastAPI()
 
 
@@ -81,7 +76,9 @@ def load_template(data: List[TemplateInfos]):
 
 @app.post('/get_placeholders')
 def get_placeholders(data: GetPlaceholderDTO):
-    return JSONResponse(db[data.name].templater.fields)
+    return JSONResponse(
+        db[data.name].templater.fields
+    )
 
 
 @app.post('/publipost')
