@@ -8,16 +8,11 @@ import minio
 from fastapi import FastAPI, Response
 from fastapi.responses import JSONResponse
 
+from .datastruct import Context
 from .dto import (ConfigureDTO, DeleteTemplate, GetPlaceholderDTO,
                   PublipostDTO, TemplateInfos)
 from .engine import Template
-from .utils import download_minio_stream
-
-
-class Context:
-    def __init__(self):
-        self.minio_client: minio.Minio = None
-
+from .utils import download_minio_stream, upload_file
 
 context = Context()
 
@@ -39,7 +34,8 @@ app = FastAPI()
 def configure(body: ConfigureDTO):
     try:
         minio_client = minio.Minio(
-            body.host, body.access_key, body.pass_key, secure=body.secure)
+            body.host, body.access_key, body.pass_key, secure=body.secure
+        )
         # checking that the instance is correct
         minio_client.list_buckets()
         context.minio_client = minio_client
@@ -50,7 +46,8 @@ def configure(body: ConfigureDTO):
 
 def pull_template(template_infos: TemplateInfos):
     doc = context.minio_client.get_object(
-        template_infos.bucket_name, template_infos.template_name)
+        template_infos.bucket_name, template_infos.template_name
+    )
     _file = download_minio_stream(doc)
     template = Template(_file)
     db[template_infos.exposed_as] = TemplateContainer(template, time.time())
@@ -73,7 +70,7 @@ def load_template(data: List[TemplateInfos]):
             failed.append({'template_name': template_infos.exposed_as})
     return JSONResponse({'success': success, 'failed': failed})
 
-
+# name, pulled_at dans le params GET
 @app.post('/get_placeholders')
 def get_placeholders(data: GetPlaceholderDTO):
     return JSONResponse(
@@ -85,14 +82,16 @@ def get_placeholders(data: GetPlaceholderDTO):
 def publipost(body: PublipostDTO):
     output = None
     try:
-        output = db[body.template_name].templater.render(body.data)
-        length = len(output.getvalue())
-        output.seek(0)
+        # check if loaded, then load if necessary
+        output = (
+            db[body.template_name]
+            .templater
+            .render(body.data)
+        )
         if body.push_result:
             # should make abstraction to push the result here
-            context.minio_client.put_object(
-                body.output_bucket, body.output_name, output, length=length
-            )
+            upload_file(context.minio_client, body.output_name,
+                        body.output_bucket, output)
             return JSONResponse({'error': False})
         else:
             # not used for now
